@@ -1,5 +1,22 @@
 import linecache
 import re
+import pygame
+
+def setup(GUI):
+    if GUI:
+        pygame.init()
+        global screen
+        screen = pygame.display.set_mode((720, 480))
+        clock = pygame.time.Clock()
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            screen.fill("white")
+            pygame.display.flip()
+            clock.tick(60)
+        pygame.quit()
 
 # creating a new storage, you probably shouldnt do this every time but it works for little tests
 
@@ -108,6 +125,7 @@ def parse(command, line, verbose):
         else:
             print("i should implement functions..")
     elif parsecommmand == "#":
+        screen.fill("purple")
         pass
     else:
         if not line == 0:
