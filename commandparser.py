@@ -1,34 +1,45 @@
 import linecache
 import re
-import pygame
 
-def setup(GUI):
-    if GUI:
-        pygame.init()
-        global screen
-        screen = pygame.display.set_mode((720, 480))
-        clock = pygame.time.Clock()
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            screen.fill("white")
-            pygame.display.flip()
-            clock.tick(60)
-        pygame.quit()
+global functions
+global skip
+global runfunction
+global jumpback
+global functionitem
+functions = []
+skip = False
+functionitem = 0
+runfunction = False
+jumpback = False
 
 # creating a new storage, you probably shouldnt do this every time but it works for little tests
-
 with open("STORAGE.SV", "w") as file:
     for i in range(1000):
         file.write(""+"\n")
+
+def functionfind(filename):
+    with open(filename, "r") as file:
+        lines = [line.rstrip() for line in file]
+    index = 0
+    for item in lines:
+        comlist = re.findall(r'"[^"]*"|\S+', item)
+        index = index + 1
+        try:
+            if comlist[0] == "f":
+                functions.append([comlist[1].replace('"', ""), index])
+        except:
+            pass
+        
+
 
 #command parser
 def parse(command, line, verbose):
     #split
     commandlist = re.findall(r'"[^"]*"|\S+', command)
-    parsecommmand = commandlist[0]
+    try:
+        parsecommmand = commandlist[0]
+    except:
+        parsecommmand = "#"
     if parsecommmand == "m":
             try:
                 if findtype(commandlist[1]) == "sector":
@@ -114,18 +125,105 @@ def parse(command, line, verbose):
             else:
                 print(f"Please enter a number on line {line}")
     elif parsecommmand == "c":
-        print("call")
+        global runfunction
+        global jumpback
+        global functionitem
+        for item in functions:
+            for item2 in item:
+                if item2 == commandlist[1].replace('"',""):
+                    runfunction = True
+                    functionitem = int(item[1])
+                    jumpback = True
     elif parsecommmand == "j":
-        print("jump")
+        for item in functions:
+            for item2 in item:
+                if item2 == commandlist[1].replace('"',""):
+                    runfunction = True
+                    functionitem = int(item[1])
+                    jumpback = False
     elif parsecommmand == "i":
-        print("if")
+        if findtype(commandlist[1]) == "sector":
+            first = getsector(commandlist[1])
+        elif findtype(commandlist[1]) == "number":
+            first = commandlist[1].replace("(","")
+            first = first.replace(")", "")
+        elif findtype(commandlist[1]) == "string":
+            first = commandlist[1].replace('"', "")
+
+        if findtype(commandlist[3]) == "sector":
+            second = getsector(commandlist[3])
+        elif findtype(commandlist[3]) == "number":
+            second = commandlist[3].replace("(","")
+            second = second.replace(")", "")
+        elif findtype(commandlist[3]) == "string":
+            second = commandlist[3].replace('"', "")
+        
+        try:
+            if not findtype(commandlist[4]) == "iffunc":
+                if commandlist[2] == "=":
+                    if str(first) == str(second):
+                        mov("1", int(commandlist[4].replace("x", "")))
+                    else:
+                        mov("0", int(commandlist[4].replace("x", "")))
+                if commandlist[2] == ">":
+                    if int(first) > int(second):
+                        mov("1", int(commandlist[4].replace("x", "")))
+                    else:
+                        mov("0", int(commandlist[4].replace("x", "")))
+                if commandlist[2] == "<":
+                    if int(first) < int(second):
+                        mov("1", int(commandlist[4].replace("x", "")))
+                    else:
+                        mov("0", int(commandlist[4].replace("x", "")))
+                if commandlist[2] == "!=":
+                    if not str(first) == str(second):
+                        mov("1", int(commandlist[4].replace("x", "")))
+                    else:
+                        mov("0", int(commandlist[4].replace("x", "")))
+                if commandlist[2] == "=!":
+                    if not str(first) == str(second):
+                        mov("1", int(commandlist[4].replace("x", "")))
+                    else:
+                        mov("0", int(commandlist[4].replace("x", "")))
+            else:
+
+                # faaahh
+
+                if commandlist[2] == "=":
+                    if str(first) == str(second):
+                        runfunc(commandlist[4].replace(":",""), True)
+                if commandlist[2] == ">":
+                    if str(first) > str(second):
+                        runfunc(commandlist[4].replace(":",""), True)
+                if commandlist[2] == "<":
+                    if str(first) < str(second):
+                        runfunc(commandlist[4].replace(":",""), True)
+                if commandlist[2] == "!=":
+                    if not str(first) == str(second):
+                        runfunc(commandlist[4].replace(":",""), True)
+                if commandlist[2] == "=!":
+                    if not str(first) == str(second):
+                        runfunc(commandlist[4].replace(":",""), True)
+
+        except:
+            if line == 0:
+                print("Please enter the i command like: i x12 = x12 x13")
+            else:
+                print(f"Please enter the i command on line {line} like: i x12 = x12 x13")
+
+
+        
     elif parsecommmand == "f":
+        global skip
         if line == 0:
             print("You cannot create functions in shell mode!")
         else:
-            print("i should implement functions..")
+            skip = True
+            
+            
     elif parsecommmand == "#":
-        screen.fill("purple")
+        pass
+    elif parsecommmand == "e":
         pass
     else:
         if not line == 0:
@@ -152,5 +250,21 @@ def findtype(argument):
         return "string"
     if "(" in argument:
         return "number"
+    if ":" in argument:
+        return "iffunc"
     else:
         return "error"
+
+def getsector(sector):
+    return getline(int(sector.replace("x", "")))
+
+def runfunc(functionname, jb):
+    global runfunction
+    global functionitem
+    global jumpback
+    for item in functions:
+        for item2 in item:
+            if item2 == functionname:
+                runfunction = True
+                functionitem = int(item[1])
+                jumpback = jb
