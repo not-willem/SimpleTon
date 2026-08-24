@@ -1,7 +1,48 @@
 import commandparser as cmp
 import sys
+import keyboard
+import threading
+
 cangoback = False
 cache = 0
+
+key = ""
+
+def onkeypressed(event):
+    global key
+    special = {
+        'shift': 'shift',
+        'right shift': 'shift',
+        'ctrl': 'ctrl',
+        'alt': 'alt',
+        'windows': 'logo',
+        'cmd': 'logo',
+        'space': 'space',
+        'caps lock': 'caps',
+        'tab': 'tab',
+        'up': 'up',
+        'down': 'down',
+        'left': 'left',
+        'right': 'right',
+        'enter': 'enter',
+    }
+    keyname = event.name
+
+    if keyname in special:
+        key = special[keyname]
+    elif len(keyname) == 1:
+        key = keyname.lower()
+    else:
+        key = keyname.lower()
+
+    cmp.mov(key + "\n", 6)
+
+def startlistener():
+    keyboard.on_press(onkeypressed)
+    keyboard.wait()
+
+threadman = threading.Thread(target=startlistener, daemon=True)
+threadman.start()
 
 if len(sys.argv) < 2:
     while True:

@@ -1,7 +1,14 @@
-m "hi" x13
-m "hi" x12
-i x13 > x12 :banan:
+j "kets"
 
-f "banan" {}
-p "it is in fact yes"
+f "kets"
+i x7 = "space" :print:
+
+j "kets"
+e
+
+
+f "print"
+p "spaced"
+
+
 e

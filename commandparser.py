@@ -34,13 +34,14 @@ def functionfind(filename):
 
 #command parser
 def parse(command, line, verbose):
+    
     #split
     commandlist = re.findall(r'"[^"]*"|\S+', command)
     try:
-        parsecommmand = commandlist[0]
+        parsecommand = commandlist[0]
     except:
-        parsecommmand = "#"
-    if parsecommmand == "m":
+        parsecommand = "#"
+    if parsecommand == "m":
             try:
                 if findtype(commandlist[1]) == "sector":
                     # checks if the param is a sector, gets rid of the x and 1-indexes it
@@ -89,7 +90,7 @@ def parse(command, line, verbose):
                 else:
                     print(f"Please check your spelling on line {line}")
 
-    elif parsecommmand == "p":
+    elif parsecommand == "p":
         if findtype(commandlist[1]) == "string":
             print(commandlist[1].replace('"',""))
         elif findtype(commandlist[1]) == "number":
@@ -100,7 +101,7 @@ def parse(command, line, verbose):
             if verbose:
                 print(commandlist[1].replace('x',""))
             print(getline(int(commandlist[1].replace('x',""))).strip())
-    elif parsecommmand == "a":
+    elif parsecommand == "a":
         if findtype(commandlist[1]) == "number":
             if findtype(commandlist[2]) == "sector":
                 numbrero = int(getline(int(commandlist[2].replace("x", ""))))
@@ -112,7 +113,7 @@ def parse(command, line, verbose):
                 print("Please enter a number!")
             else:
                 print(f"Please enter a number on line {line}")
-    elif parsecommmand == "s":
+    elif parsecommand == "s":
         if findtype(commandlist[1]) == "number":
             if findtype(commandlist[2]) == "sector":
                 numbrero = int(getline(int(commandlist[2].replace("x", ""))))
@@ -124,7 +125,7 @@ def parse(command, line, verbose):
                 print("Please enter a number!")
             else:
                 print(f"Please enter a number on line {line}")
-    elif parsecommmand == "c":
+    elif parsecommand == "c":
         global runfunction
         global jumpback
         global functionitem
@@ -134,14 +135,14 @@ def parse(command, line, verbose):
                     runfunction = True
                     functionitem = int(item[1])
                     jumpback = True
-    elif parsecommmand == "j":
+    elif parsecommand == "j":
         for item in functions:
             for item2 in item:
                 if item2 == commandlist[1].replace('"',""):
                     runfunction = True
                     functionitem = int(item[1])
                     jumpback = False
-    elif parsecommmand == "i":
+    elif parsecommand == "i":
         if findtype(commandlist[1]) == "sector":
             first = getsector(commandlist[1])
         elif findtype(commandlist[1]) == "number":
@@ -157,6 +158,7 @@ def parse(command, line, verbose):
             second = second.replace(")", "")
         elif findtype(commandlist[3]) == "string":
             second = commandlist[3].replace('"', "")
+        
         
         try:
             if not findtype(commandlist[4]) == "iffunc":
@@ -212,8 +214,22 @@ def parse(command, line, verbose):
                 print(f"Please enter the i command on line {line} like: i x12 = x12 x13")
 
 
-        
-    elif parsecommmand == "f":
+    elif parsecommand == "l":
+        try:
+            text = commandlist[1]
+            text = text.replace('"', "")
+            letter = commandlist[2].replace("(", "")
+            letter = letter.replace(")","")
+            letter = int(letter)
+            sector = commandlist[3].replace("x", "")
+            mov(text[letter-1], int(sector)-1)
+        except:
+            if line == 0:
+                print('Please format "l" like "l "sausage" (4) x9"')
+            else:
+                print(f'Please format "l" on line {line} like "l "sausage" (4) x9"')
+
+    elif parsecommand == "f":
         global skip
         if line == 0:
             print("You cannot create functions in shell mode!")
@@ -221,15 +237,15 @@ def parse(command, line, verbose):
             skip = True
             
             
-    elif parsecommmand == "#":
+    elif parsecommand == "#":
         pass
-    elif parsecommmand == "e":
+    elif parsecommand == "e":
         pass
     else:
         if not line == 0:
-            print(f'Failed to parse command "{parsecommmand}" on line {line}.. Maybe check your spelling?')
+            print(f'Failed to parse command "{parsecommand}" on line {line}.. Maybe check your spelling?')
         else:
-            print(f'Failed to parse command "{parsecommmand}".. Maybe check your spelling?')
+            print(f'Failed to parse command "{parsecommand}".. Maybe check your spelling?')
 
 def mov(text, line):
     with open("STORAGE.SV", "r") as file:
