@@ -1,5 +1,6 @@
 import linecache
 import re
+import time
 
 global functions
 global skip
@@ -235,7 +236,21 @@ def parse(command, line, verbose):
             print("You cannot create functions in shell mode!")
         else:
             skip = True
-            
+    elif parsecommand == "t":
+        try:
+            if commandlist[1] == "w":
+                timeman = commandlist[2].replace("(","")
+                timeman = timeman.replace(")","")
+                timeman = float(timeman)
+                functionman = commandlist[3].replace(":","")
+                
+                time.sleep(timeman)
+                runfunc(functionman, True)
+        except:
+            if line == 0:
+                print('Please format "t" like "t w (1) :function:"')
+            else:
+                print(f'Please format "t" like "t w (1) :function:" on line {line}')
             
     elif parsecommand == "#":
         pass
