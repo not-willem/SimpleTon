@@ -6,6 +6,7 @@ from pynput import keyboard
 cangoback = False
 cache = 0
 current_key = "none"
+displaycommands = []
 
 def on_press(key):
     global current_key
@@ -64,8 +65,11 @@ else:
     fileindex = 0
     while fileindex < len(lines):
         cmp.parse(lines[fileindex], fileindex + 1, False)
+        
         for i in range(6):
-            cmp.mov(""+"\n",int(i))
+            displaycommands.append(cmp.getline(int(i)+1))
+            cmp.mov(""+"\n",int(i)-1)
+            
         if cmp.skip:
             try:
                 while not lines[fileindex] == "e":

@@ -322,7 +322,7 @@ def getline(line):
     return linecache.getline("STORAGE.SV", line)
 
 def findtype(argument):
-    if "x" in argument:
+    if "x" in argument[0]:
         return "sector"
     if '"' in argument:
         return "string"
