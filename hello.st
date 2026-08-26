@@ -1,8 +1,12 @@
-p "1"
+m "hello" x15
 
-t w (0.1) :two:
+i "hello" = x15 :poop:
+i "hello" != x15 :poop2:
 
-f "two"
-p "2"
+f "poop"
+p "yeds"
+e
 
+f "poop2"
+p "no"
 e

@@ -159,6 +159,17 @@ def parse(command, line, verbose):
             second = second.replace(")", "")
         elif findtype(commandlist[3]) == "string":
             second = commandlist[3].replace('"', "")
+        first = first.split()
+        second = second.split()
+        first = first[0]
+        second = second[0]
+        if verbose:
+            print(first)
+            print(second)
+            if first == second:
+                print("ok")
+            else:
+                print("no")
         
         
         try:
@@ -217,13 +228,38 @@ def parse(command, line, verbose):
 
     elif parsecommand == "l":
         try:
-            text = commandlist[1]
-            text = text.replace('"', "")
-            letter = commandlist[2].replace("(", "")
-            letter = letter.replace(")","")
-            letter = int(letter)
-            sector = commandlist[3].replace("x", "")
-            mov(text[letter-1], int(sector)-1)
+            if commandlist[1] == "j":
+                if verbose:
+                    print("Detected join flag")
+                string1 = commandlist[2]
+                string2 = commandlist[3]
+                sector = commandlist[4]
+                string1 = string1.replace('"',"")
+                string2 = string2.replace('"',"")
+                sector = sector.replace("x", "")
+                string1 = string1+string2
+                mov(string1+"\n", int(sector)-1)
+
+
+            else:
+                if findtype(commandlist[1]) == "text":
+                    text = commandlist[1]
+                    text = text.replace('"', "")
+                    letter = commandlist[2].replace("(", "")
+                    letter = letter.replace(")","")
+                    letter = int(letter)
+                    sector = commandlist[3].replace("x", "")
+                    
+                    mov(text[letter-1], int(sector))
+                elif findtype(commandlist[1]) == "sector":
+                    text = commandlist[1]
+                    text = text.replace('x', "")
+                    text = getline(int(text))
+                    letter = commandlist[2].replace("(", "")
+                    letter = letter.replace(")","")
+                    letter = int(letter)
+                    sector = commandlist[3].replace("x", "")
+                    mov(text[letter-1]+"\n", int(sector)-1)
         except:
             if line == 0:
                 print('Please format "l" like "l "sausage" (4) x9"')
