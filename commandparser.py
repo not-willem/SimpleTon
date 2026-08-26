@@ -13,7 +13,7 @@ functionitem = 0
 runfunction = False
 jumpback = False
 
-# creating a new storage, you probably shouldnt do this every time but it works for little tests
+# creating a new storage..
 with open("STORAGE.SV", "w") as file:
     for i in range(1000):
         file.write(""+"\n")
@@ -107,14 +107,14 @@ def parse(command, line, verbose):
             if findtype(commandlist[2]) == "sector":
                 numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = commandlist[1].replace("(", "")
-                numbrero = numbrero + float(fixed.replace(")", ""))
-                mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
+                numbrero = round(numbrero + float(fixed.replace(")", "")), 10)
+                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
         if findtype(commandlist[1]) == "sector":
             if findtype(commandlist[2]) == "sector":
                 numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = float(getline(int(commandlist[1].replace("x",""))))
-                numbrero = numbrero + float(fixed)
-                mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
+                numbrero = round(numbrero + float(fixed), 10)
+                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
         else:
             if line == 0:
                 print("Please enter a number!")
@@ -125,14 +125,14 @@ def parse(command, line, verbose):
             if findtype(commandlist[2]) == "sector":
                 numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = commandlist[1].replace("(", "")
-                numbrero = numbrero - float(fixed.replace(")", ""))
-                mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
+                numbrero = round(numbrero - float(fixed.replace(")", "")), 10)
+                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
         if findtype(commandlist[1]) == "sector":
             if findtype(commandlist[2]) == "sector":
                 numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = float(getline(int(commandlist[1].replace("x",""))))
-                numbrero = numbrero - float(fixed)
-                mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
+                numbrero = round(numbrero - float(fixed), 10)
+                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
         else:
             if line == 0:
                 print("Please enter a number!")
@@ -173,8 +173,7 @@ def parse(command, line, verbose):
             second = commandlist[3].replace('"', "")
         first = first.split()
         second = second.split()
-        first = first[0]
-        second = second[0]
+
         if verbose:
             print(first)
             print(second)
