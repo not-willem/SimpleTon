@@ -64,6 +64,8 @@ else:
     fileindex = 0
     while fileindex < len(lines):
         cmp.parse(lines[fileindex], fileindex + 1, False)
+        for i in range(6):
+            cmp.mov(""+"\n",int(i))
         if cmp.skip:
             try:
                 while not lines[fileindex] == "e":
@@ -82,5 +84,5 @@ else:
             if cmp.jumpback == True:
                 fileindex = cache
                 cmp.jumpback = False
-            
+
         fileindex = fileindex + 1
