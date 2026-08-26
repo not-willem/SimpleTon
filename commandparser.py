@@ -105,9 +105,15 @@ def parse(command, line, verbose):
     elif parsecommand == "a":
         if findtype(commandlist[1]) == "number":
             if findtype(commandlist[2]) == "sector":
-                numbrero = int(getline(int(commandlist[2].replace("x", ""))))
+                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = commandlist[1].replace("(", "")
-                numbrero = numbrero + int(fixed.replace(")", ""))
+                numbrero = numbrero + float(fixed.replace(")", ""))
+                mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
+        if findtype(commandlist[1]) == "sector":
+            if findtype(commandlist[2]) == "sector":
+                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
+                fixed = float(getline(int(commandlist[1].replace("x",""))))
+                numbrero = numbrero + float(fixed)
                 mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
         else:
             if line == 0:
@@ -117,9 +123,15 @@ def parse(command, line, verbose):
     elif parsecommand == "s":
         if findtype(commandlist[1]) == "number":
             if findtype(commandlist[2]) == "sector":
-                numbrero = int(getline(int(commandlist[2].replace("x", ""))))
+                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = commandlist[1].replace("(", "")
-                numbrero = numbrero - int(fixed.replace(")", ""))
+                numbrero = numbrero - float(fixed.replace(")", ""))
+                mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
+        if findtype(commandlist[1]) == "sector":
+            if findtype(commandlist[2]) == "sector":
+                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
+                fixed = float(getline(int(commandlist[1].replace("x",""))))
+                numbrero = numbrero - float(fixed)
                 mov(str(numbrero), int(commandlist[2].replace("x", ""))-1)
         else:
             if line == 0:

@@ -1,12 +1,3 @@
-m "hello" x15
-
-i "hello" = x15 :poop:
-i "hello" != x15 :poop2:
-
-f "poop"
-p "yeds"
-e
-
-f "poop2"
-p "no"
-e
+m (1.5) x12
+m (2.2) x13
+s x12 x13
