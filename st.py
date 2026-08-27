@@ -93,6 +93,9 @@ def runterminalinbackground():
                         if displaycommands[5] == "circle":
                             pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
                             displaycommands = ["","","","","",""]
+                        if displaycommands[5] == "square":
+                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                            displaycommands = ["","","","","",""]
                     except:
                         pass
 
