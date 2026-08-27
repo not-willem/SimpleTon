@@ -130,7 +130,8 @@ threadman.start()
 
 if len(sys.argv) > 1:
     with open(sys.argv[1], "r") as file:
-        if "x1" in file.read():
+        if "x5" in file.read():
+            # FIIXIXIXIXI
             print("Display detected!! Starting it now..")
             program_thread = threading.Thread(target=runterminalinbackground, daemon=True)
             program_thread.start()
