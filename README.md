@@ -15,6 +15,10 @@ also get pygame-ce, not regular pygame because pygame is outdated
 
 4. now, you can run "py st.py hello.st" to run my graphics test. the z-layering may flicker but that's because i really haven't implemented it that well.
 
+also if i haven't already, i might package it and port it to windows, linux, etc so if i have, then just download the executable from releases and run it like:
+
+st.exe hello.st
+
 # Documentation and porting help
 
 Basically i have just a big google doc of the commands that made sense to me at the time but i dont know if they still do. anyway look for things like "l docs" or "m docs" etc
