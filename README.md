@@ -19,6 +19,8 @@ also if i haven't already, i might package it and port it to windows, linux, etc
 
 st.exe hello.st
 
+also keep the ttf file with the exe file! for some reason, it doesnt want to pack it into the exe so ive just zipped it up
+
 # Documentation and porting help
 
 Basically i have just a big google doc of the commands that made sense to me at the time but i dont know if they still do. anyway look for things like "l docs" or "m docs" etc
