@@ -25,6 +25,8 @@ def setupdisplay():
     global screen
     global mtsx
     global mtsy
+    global mousex
+    global mousey
     pygame.init()
     screen = pygame.display.set_mode((mtsx, mtsy), pygame.FULLSCREEN)
     pygame.display.set_caption("SimpleTon Display Output")
@@ -34,9 +36,9 @@ def setupdisplay():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        
+        mousex, mousey = pygame.mouse.get_pos()
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(10000)
     pygame.quit()
     sys.exit()
 
@@ -73,6 +75,16 @@ def on_press(key):
         current_key = str(key).replace("Key.", "").lower()
     
     cmp.mov(current_key + "\n", 6)
+
+def sendmouse():
+    global mousex
+    global mousey
+    mousex = None
+    mousey = None
+    while True:
+        if mousex is not None:
+            cmp.mov(str(mousex) + "\n", 7)
+            cmp.mov(str(mousey) + "\n", 8)
 
 def on_release(key):
     global current_key
@@ -151,6 +163,7 @@ def runterminalinbackground():
 threadman = threading.Thread(target=startlistener, daemon=True)
 threadman.start()
 
+
 if len(sys.argv) > 1:
     with open(sys.argv[1], "r") as file:
         if linecache.getline(sys.argv[1], 1).strip() == "d":
@@ -159,6 +172,8 @@ if len(sys.argv) > 1:
             program_thread = threading.Thread(target=runterminalinbackground, daemon=True)
             program_thread.start()
             setupdisplay()
+            mouseman = threading.Thread(target=sendmouse, daemon=True)
+            mouseman.start()
             
         else:
             if verbose:

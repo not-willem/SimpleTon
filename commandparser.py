@@ -7,6 +7,8 @@ global skip
 global runfunction
 global jumpback
 global functionitem
+global mousex
+global mousey
 functions = []
 skip = False
 functionitem = 0
