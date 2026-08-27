@@ -1,5 +1,11 @@
-m "six or seven" x1
-m (1.5) x12
-m (2.2) x13
-s x12 x13
-p x13
+p "poop"
+j "disp"
+f "disp"
+m (0) x1
+m (0) x2
+m (100) x3
+m (100) x4
+m "(255,255,255)" x5
+m "circle" x6
+j "disp"
+e
