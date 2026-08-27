@@ -109,7 +109,7 @@ def parse(command, line, verbose):
                 fixed = commandlist[1].replace("(", "")
                 numbrero = round(numbrero + float(fixed.replace(")", "")), 10)
                 mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
-        if findtype(commandlist[1]) == "sector":
+        elif findtype(commandlist[1]) == "sector":
             if findtype(commandlist[2]) == "sector":
                 numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = float(getline(int(commandlist[1].replace("x",""))))
@@ -127,7 +127,7 @@ def parse(command, line, verbose):
                 fixed = commandlist[1].replace("(", "")
                 numbrero = round(numbrero - float(fixed.replace(")", "")), 10)
                 mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
-        if findtype(commandlist[1]) == "sector":
+        elif findtype(commandlist[1]) == "sector":
             if findtype(commandlist[2]) == "sector":
                 numbrero = float(getline(int(commandlist[2].replace("x", ""))))
                 fixed = float(getline(int(commandlist[1].replace("x",""))))
@@ -302,6 +302,8 @@ def parse(command, line, verbose):
     elif parsecommand == "#":
         pass
     elif parsecommand == "e":
+        pass
+    elif parsecommand == "d":
         pass
     else:
         if not line == 0:

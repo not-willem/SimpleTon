@@ -4,7 +4,17 @@ import sys
 import threading
 from pynput import keyboard
 import ast
+from screeninfo import get_monitors
+import linecache
 
+global mtsx
+global mtsy
+for monitor in get_monitors():
+    mtsx = monitor.width
+    mtsy = monitor.height
+
+global verbose
+verbose = False
 cangoback = False
 cache = 0
 current_key = "none"
@@ -13,8 +23,10 @@ screen = None
 
 def setupdisplay():
     global screen
+    global mtsx
+    global mtsy
     pygame.init()
-    screen = pygame.display.set_mode((1920, 1080))
+    screen = pygame.display.set_mode((mtsx, mtsy), pygame.FULLSCREEN)
     pygame.display.set_caption("SimpleTon Display Output")
     clock = pygame.time.Clock()
     running = True
@@ -79,23 +91,34 @@ def runterminalinbackground():
     if len(sys.argv) < 2:
         while True:
             userinput = input("> ")
-            cmp.parse(userinput, 0, False)
+            cmp.parse(userinput, 0, verbose)
     else:
         with open(sys.argv[1], "r",encoding='utf-8') as file:
             lines = [line.rstrip() for line in file]
         cmp.functionfind(sys.argv[1])
         fileindex = 0
         while fileindex < len(lines):
-            cmp.parse(lines[fileindex], fileindex + 1, False)
+            cmp.parse(lines[fileindex], fileindex + 1, verbose)
             if screen is not None:
                 if "" not in displaycommands:
                     try:
                         if displaycommands[5] == "circle":
-                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
                             displaycommands = ["","","","","",""]
                         if displaycommands[5] == "square":
-                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
                             displaycommands = ["","","","","",""]
+                        if displaycommands[5] == "filledcircle":
+                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                            displaycommands = ["","","","","",""]
+                        if displaycommands[5] == "filledsquare":
+                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                            displaycommands = ["","","","","",""]                            
+                        if displaycommands[5] == "text":
+                            fonter = pygame.font.Font("Ac437_IBM_VGA_8x16.ttf", int(displaycommands[2]))
+                            textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
+                            screen.blit(textperson, (int(displaycommands[0]), int(displaycommands[1])))
+                            displaycommands = ["","","","","",""] 
                     except:
                         pass
 
@@ -130,14 +153,16 @@ threadman.start()
 
 if len(sys.argv) > 1:
     with open(sys.argv[1], "r") as file:
-        if "x5" in file.read():
-            # FIIXIXIXIXI
-            print("Display detected!! Starting it now..")
+        if linecache.getline(sys.argv[1], 1).strip() == "d":
+            if verbose:
+                print("Display detected!! Starting it now..")
             program_thread = threading.Thread(target=runterminalinbackground, daemon=True)
             program_thread.start()
             setupdisplay()
             
         else:
+            if verbose:
+                print("Display not found..")
             runterminalinbackground()
 else:
     runterminalinbackground()
