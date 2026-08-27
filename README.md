@@ -27,6 +27,9 @@ Basically i have just a big google doc of the commands that made sense to me at 
 
 alright here it is:
 ```
+!! remind myself to add mouse functions !!
+!! and keyboard interrupt !!
+
 m - (mov,  e.g m source, destination)
 p - (print)
 a - (add)
@@ -68,6 +71,9 @@ x6 - shape (can be either "circle", "square", "triangle", "filledcircle", "fille
 Also with the shapes, circle, square and triangle, unless specified as filled it will have an outline of 1px
 
 And x7 holds input using strings.
+
+And x8 holds mouse X
+And x9 holds mouse Y
 
 For example if you pressed the up arrow it would change to "up". 
 Its very standard but if you are doing function keys it’s just "F4" or so on
@@ -142,17 +148,17 @@ Use "m" for moving things
 
 !! DO NOT USE SECTORS UP TO x7 FOR STORING THINGS, THEY WILL NOT SAVE AND BE SENT TO THE SCREEN !!
 
-x8 is chill
+x10 is chill
 
 
 Storage gets called from 0-100 with an x at the start
 
 e.g…
 
-m "hello", x8
-m x8, x9
+m "hello", x10
+m x10, x11
 # this is a code comment
-# this code moves hello to x9
+# this code moves hello to x11
 # mov copies the first value to the second value but leaves the first value the same
 m (0) x1 
 m (0) x2 
@@ -161,7 +167,7 @@ m (100) x4
 m "(100,100,100)" x5
 m "circle" x6 
 # this code creates a circle
-
+# well only for one frame.. You’d need to put it in a loop
 Storage to storage moving is allowed
 
 e.g..
@@ -192,25 +198,25 @@ Format: "a (additive number) (storage sector)"
 "a" adds to the specified value by replacing it with the original value but added up by an inputted number
 
 e.g:
-a (1) x8
-# this will add 1 to the x8 number
+a (1) x10
+# this will add 1 to the x10 number
 
 
 You can also add sectors like
-a x9 x10
-# This would get the data from x9, add it to x10 then put it in x10
+a x10 x11
+# This would get the data from x10, add it to x11 then put it in x11
 
 !! this will error if it is not a number !!
 to solve this you can run a m command to make it a number like so:
 
-m (1) x8
-a (2) x8
+m (1) x10
+a (2) x10
 
 Also, it will error if you try to do a number plus another number without any way to output it:
 
 a (1) (2)    ← this will not work
 
-# this will give you 3
+# this will not give you 3
 
 s docs:
 
@@ -242,7 +248,7 @@ e.g:
 f "hello"
 #i’ll show you how to call this next
 
-m x9 x8
+m x10 x11
 
 To end the function, call "e" for end
 
@@ -251,7 +257,7 @@ f "noargs"
 Some test code:
 
 f "hello"
-m x9 x8
+m x10 x11
 e
 
 If you run this function, it would move whatever you put in sector to x7
@@ -262,7 +268,7 @@ you can call functions with c like this:
 
 c hello
 
-# in this example, look up for reference, this would move x2 to x7
+# in this example, look up for reference, this would move x10 to x11
 
 However, when you run c it will run the function then take you back to the code the c was run from, versus j which runs the function and stops afterwards if there are no more jumps or calls to do.
 
@@ -281,7 +287,8 @@ i docs:
 you can compare using i:
 
 format:
-i x7 = x8 x9
+i x10 = x11 x12
+^^ this will put either 0 or 1 in x12 based on the output of the statement
 
 Different comparators:
 
@@ -294,12 +301,12 @@ Different comparators:
 You can compare strings, numbers, and the contents of a sector.
 It will output to the last argument but it will compare the first two:
 
-i x9 = x10 x2
+i x10 = x11 x12
 
 How it outputs is in 0s and 1s as numbers but you can compare strings and such others
 
 You can also run functions if it is correct like this:
-i x9 = x10 :functionname:
+i x10 = x11:functionname:
 
 It will jump back and continue like a call function after the function has been run
 
@@ -333,24 +340,23 @@ e
 l docs:
 
 l stands for letter and it’s pretty easy to use
-l "text" (letter) x9 ← output
+l "text" (letter) x10 ← output
 
 So if you wanted to find the 4th letter in the word "sausage" you would do this:
 
-l "sausage" (4) x9
+l "sausage" (4) x10
 
 You can also find the letter in a sector like this:
 
-l x10 (4) x9
+l x10 (4) x11
 
-If x10 was "sausage" then it would put s in x9
+If x10 was "sausage" then it would put s in x11
 
-This would put "s" in x9
 
 You can pass a "j" to join text together like this:
 
-l j "hello " "world" x9
-^^ this would join to be "hello world" and put it in x9
+l j "hello " "world" x10
+^^ this would join to be "hello world" and put it in x10
 Pretty self explanatory so im not gonna bother explaining
 
 
@@ -371,6 +377,7 @@ And expect it to work because it wont
 You NEED to call a function..
 
 It is measured in seconds btw
+And you can do floats
 
 When you run a function, it runs it like a call command and returns to the original line afterwards
 
@@ -416,4 +423,7 @@ Right - "right"
 Enter - "enter"
 
 And then the rest is just whatever they are called but not capitalized.
+
+And x8 and x9 are mouse x and mouse y
+
 ```
