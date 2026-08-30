@@ -14,11 +14,7 @@ skip = False
 functionitem = 0
 runfunction = False
 jumpback = False
-
-# creating a new storage..
-with open("STORAGE.SV", "w") as file:
-    for i in range(1000):
-        file.write(""+"\n")
+STORAGE = ["" for _ in range(1000)]
 
 def functionfind(filename):
     with open(filename, "r") as file:
@@ -50,16 +46,16 @@ def parse(command, line, verbose):
                     # checks if the param is a sector, gets rid of the x and 1-indexes it
                     number = commandlist[1].replace("x", "")
                     number = int(number)
-                    #gets it from the storage file
-                    storagesector = linecache.getline("STORAGE.SV", number)
+                    #gets it from the storage list
+                    storagesector = STORAGE[number-1]
                     if verbose:
                         print(storagesector)
                     if findtype(commandlist[2]) == "sector":
                         #moving time
                         number = commandlist[2].replace("x", "")
                         number = int(number)
-                        #gets it from the storage file
-                        storagesector2 = linecache.getline("STORAGE.SV", number)
+                        #gets it from the storage list
+                        storagesector2 = STORAGE[number-1]
                         if verbose:
                             print(storagesector2)
                         #moves the things around
@@ -314,16 +310,13 @@ def parse(command, line, verbose):
             print(f'Failed to parse command "{parsecommand}".. Maybe check your spelling?')
 
 def mov(text, line):
-    with open("STORAGE.SV", "r") as file:
-        lines = file.readlines()
-    if 0 <= line < len(lines):
-        lines[line] = text
-    with open("STORAGE.SV", "w") as file:
-        file.writelines(lines)
+    if 0 <= line < len(STORAGE):
+        STORAGE[line] = text
 
 def getline(line):
-    linecache.clearcache()
-    return linecache.getline("STORAGE.SV", line)
+    if 0 < line <= len(STORAGE):
+        return STORAGE[line-1]
+    return ""
 
 def findtype(argument):
     if "x" in argument[0]:
