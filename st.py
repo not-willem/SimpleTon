@@ -22,6 +22,7 @@ current_key = "none"
 displaycommands = []
 screen = None
 tricommands = None
+listener_running = True
 
 def setupdisplay():
     global screen
@@ -98,102 +99,113 @@ def on_release(key):
     cmp.mov("none\n", 6)
 
 def startlistener():
+    global listener_running
     with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-        listener.join()
+        while listener_running:
+            time.sleep(0.1)
 
 def runterminalinbackground():
     global displaycommands
     global screen
     global tricommands
+    global listener_running
     displaycommands = ["","","","","",""]
     tricommands = None
     if len(sys.argv) < 2:
-        while True:
-            userinput = input("> ")
-            cmp.parse(userinput, 0, verbose)
+        try:
+            while True:
+                userinput = input("> ")
+                cmp.parse(userinput, 0, verbose)
+        except KeyboardInterrupt:
+            listener_running = False
+            sys.exit()
     else:
         with open(sys.argv[1], "r",encoding='utf-8') as file:
             lines = [line.rstrip() for line in file]
         cmp.functionfind(sys.argv[1])
         fileindex = 0
-        while fileindex < len(lines):
-            cmp.parse(lines[fileindex], fileindex + 1, verbose)
-            
-            for i in range(6):
-                line_data = cmp.getline(int(i)+1)
-                if line_data and line_data != "\n" and line_data != "":
-                    displaycommands[int(i)] = line_data.replace("\n", "")
-                cmp.mov(""+"\n",int(i))
-            
-            if screen is not None and all(x != "" for x in displaycommands):
-                try:
-                    if displaycommands[5] == "circle":
-                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])], 1)
-                        displaycommands = ["","","","","",""]
-                    elif displaycommands[5] == "square":
-                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])], 1)
-                        displaycommands = ["","","","","",""]
-                    elif displaycommands[5] == "filledcircle":
-                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])])
-                        displaycommands = ["","","","","",""]
-                    elif displaycommands[5] == "filledsquare":
-                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])])
-                        displaycommands = ["","","","","",""]                            
-                    elif displaycommands[5] == "text":
-                        fonter = pygame.font.Font(None, int(displaycommands[2]))
-                        textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
-                        screen.blit(textperson, (float(displaycommands[0]), float(displaycommands[1])))
-                        displaycommands = ["","","","","",""] 
-                    elif displaycommands[5] in ["triangle", "filledtriangle"]:
-                        if displaycommands[3] != "none" and tricommands is None:
-                            tricommands = displaycommands.copy()
+        try:
+            while fileindex < len(lines):
+                cmp.parse(lines[fileindex], fileindex + 1, verbose)
+                
+                for i in range(6):
+                    line_data = cmp.getline(int(i)+1)
+                    if line_data and line_data != "\n" and line_data != "":
+                        displaycommands[int(i)] = line_data.replace("\n", "")
+                    cmp.mov(""+"\n",int(i))
+                
+                if screen is not None and all(x != "" for x in displaycommands):
+                    try:
+                        if displaycommands[5] == "circle":
+                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])], 1)
                             displaycommands = ["","","","","",""]
-                        elif displaycommands[3] == "none" and tricommands is not None:
-                            x1 = float(tricommands[0])
-                            y1 = float(tricommands[1])
-                            x2 = float(tricommands[2])
-                            y2 = float(tricommands[3])
-                            color = ast.literal_eval(tricommands[4])
-                            
-                            x3 = float(displaycommands[0])
-                            y3 = float(displaycommands[1])
-                            outline_width = float(displaycommands[2])
-                            
-                            if tricommands[5] == "filledtriangle":
-                                if outline_width == 0:
-                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)])
-                                else:
-                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], outline_width)
-                            else:
-                                if outline_width == 0:
-                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], 1)
-                                else:
-                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], outline_width)
-                            
-                            tricommands = None
+                        elif displaycommands[5] == "square":
+                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])], 1)
                             displaycommands = ["","","","","",""]
-                except Exception as e:
-                    pass
+                        elif displaycommands[5] == "filledcircle":
+                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])])
+                            displaycommands = ["","","","","",""]
+                        elif displaycommands[5] == "filledsquare":
+                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])])
+                            displaycommands = ["","","","","",""]                            
+                        elif displaycommands[5] == "text":
+                            fonter = pygame.font.Font(None, int(displaycommands[2]))
+                            textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
+                            screen.blit(textperson, (float(displaycommands[0]), float(displaycommands[1])))
+                            displaycommands = ["","","","","",""] 
+                        elif displaycommands[5] in ["triangle", "filledtriangle"]:
+                            if displaycommands[3] != "none" and tricommands is None:
+                                tricommands = displaycommands.copy()
+                                displaycommands = ["","","","","",""]
+                            elif displaycommands[3] == "none" and tricommands is not None:
+                                x1 = float(tricommands[0])
+                                y1 = float(tricommands[1])
+                                x2 = float(tricommands[2])
+                                y2 = float(tricommands[3])
+                                color = ast.literal_eval(tricommands[4])
+                                
+                                x3 = float(displaycommands[0])
+                                y3 = float(displaycommands[1])
+                                outline_width = float(displaycommands[2])
+                                
+                                if tricommands[5] == "filledtriangle":
+                                    if outline_width == 0:
+                                        pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)])
+                                    else:
+                                        pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], outline_width)
+                                else:
+                                    if outline_width == 0:
+                                        pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], 1)
+                                    else:
+                                        pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], outline_width)
+                                
+                                tricommands = None
+                                displaycommands = ["","","","","",""]
+                    except:
+                        pass
 
-            if cmp.skip:
-                try:
-                    while not lines[fileindex] == "e":
-                        fileindex = fileindex + 1
-                        if fileindex > len(lines) - 1:
-                            print('Please add a "e" command to your code to end the function!')
-                except:
-                    pass
-            
-            if cmp.runfunction == True:
-                cache = fileindex
-                fileindex = cmp.functionitem - 1
-                cmp.runfunction = False
-            if lines[fileindex] == "e":
-                if cmp.jumpback == True:
-                    fileindex = cache
-                    cmp.jumpback = False
+                if cmp.skip:
+                    try:
+                        while not lines[fileindex] == "e":
+                            fileindex = fileindex + 1
+                            if fileindex > len(lines) - 1:
+                                print('Please add a "e" command to your code to end the function!')
+                    except:
+                        pass
+                
+                if cmp.runfunction == True:
+                    cache = fileindex
+                    fileindex = cmp.functionitem - 1
+                    cmp.runfunction = False
+                if lines[fileindex] == "e":
+                    if cmp.jumpback == True:
+                        fileindex = cache
+                        cmp.jumpback = False
 
-            fileindex = fileindex + 1
+                fileindex = fileindex + 1
+        except KeyboardInterrupt:
+            listener_running = False
+            sys.exit()
 
 threadman = threading.Thread(target=startlistener, daemon=True)
 threadman.start()
@@ -205,7 +217,11 @@ if len(sys.argv) > 1:
                 print("Display detected!! Starting it now..")
             program_thread = threading.Thread(target=runterminalinbackground, daemon=True)
             program_thread.start()
-            setupdisplay()
+            try:
+                setupdisplay()
+            except KeyboardInterrupt:
+                listener_running = False
+                sys.exit()
             mouseman = threading.Thread(target=sendmouse, daemon=True)
             mouseman.start()
         else:
