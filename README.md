@@ -11,7 +11,7 @@ i've began working on writing a coding language and it's going great so far!!
 
 3. Use cd to get into the directory you unzipped the file to, then run ``` pip install -r requirements.txt ```
 
-4. Now, run ```py st.py``` and put the name of the .st file you want to run.
+4. Now, run ```py st.py``` or ```python st.py``` and put the name of the .st file you want to run.
 
 5. It should bring you to a terminal that you can quit easily by pressing ctrl+c
 
