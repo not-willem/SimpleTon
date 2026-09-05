@@ -24,7 +24,7 @@ m "filledtriangle" x6
 
 # tri 2
 
-m (300) x1
+m (300.8) x1
 m (100) x2
 m (400) x3
 m (100) x4
