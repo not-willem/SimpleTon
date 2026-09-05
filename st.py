@@ -128,36 +128,36 @@ def runterminalinbackground():
             if screen is not None and all(x != "" for x in displaycommands):
                 try:
                     if displaycommands[5] == "circle":
-                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
+                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])], 1)
                         displaycommands = ["","","","","",""]
                     elif displaycommands[5] == "square":
-                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
+                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])], 1)
                         displaycommands = ["","","","","",""]
                     elif displaycommands[5] == "filledcircle":
-                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])])
                         displaycommands = ["","","","","",""]
                     elif displaycommands[5] == "filledsquare":
-                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [float(displaycommands[0]), float(displaycommands[1]), float(displaycommands[2]), float(displaycommands[3])])
                         displaycommands = ["","","","","",""]                            
                     elif displaycommands[5] == "text":
                         fonter = pygame.font.Font(None, int(displaycommands[2]))
                         textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
-                        screen.blit(textperson, (int(displaycommands[0]), int(displaycommands[1])))
+                        screen.blit(textperson, (float(displaycommands[0]), float(displaycommands[1])))
                         displaycommands = ["","","","","",""] 
                     elif displaycommands[5] in ["triangle", "filledtriangle"]:
                         if displaycommands[3] != "none" and tricommands is None:
                             tricommands = displaycommands.copy()
                             displaycommands = ["","","","","",""]
                         elif displaycommands[3] == "none" and tricommands is not None:
-                            x1 = int(tricommands[0])
-                            y1 = int(tricommands[1])
-                            x2 = int(tricommands[2])
-                            y2 = int(tricommands[3])
+                            x1 = float(tricommands[0])
+                            y1 = float(tricommands[1])
+                            x2 = float(tricommands[2])
+                            y2 = float(tricommands[3])
                             color = ast.literal_eval(tricommands[4])
                             
-                            x3 = int(displaycommands[0])
-                            y3 = int(displaycommands[1])
-                            outline_width = int(displaycommands[2])
+                            x3 = float(displaycommands[0])
+                            y3 = float(displaycommands[1])
+                            outline_width = float(displaycommands[2])
                             
                             if tricommands[5] == "filledtriangle":
                                 if outline_width == 0:
