@@ -15,6 +15,7 @@ functionitem = 0
 runfunction = False
 jumpback = False
 STORAGE = ["" for _ in range(1000)]
+triangle_storage = {}
 
 def functionfind(filename):
     with open(filename, "r") as file:
@@ -84,37 +85,85 @@ def parse(command, line, verbose):
                 print(commandlist[1].replace('x',""))
             print(getline(int(commandlist[1].replace('x',""))).strip())
     elif parsecommand == "a":
-        if findtype(commandlist[1]) == "number":
-            if findtype(commandlist[2]) == "sector":
-                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
-                fixed = commandlist[1].replace("(", "")
-                numbrero = round(numbrero + float(fixed.replace(")", "")), 10)
-                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
-        elif findtype(commandlist[1]) == "sector":
-            if findtype(commandlist[2]) == "sector":
-                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
-                fixed = float(getline(int(commandlist[1].replace("x",""))))
-                numbrero = round(numbrero + float(fixed), 10)
-                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
-        else:
+        try:
+            if commandlist[1] == "t":
+                if findtype(commandlist[2]) == "number":
+                    if findtype(commandlist[3]) == "sector":
+                        numbrero = float(getline(int(commandlist[3].replace("x", ""))))
+                        fixed = commandlist[2].replace("(", "")
+                        numbrero = round(numbrero * float(fixed.replace(")", "")), 10)
+                        mov(str(numbrero)+"\n", int(commandlist[3].replace("x", ""))-1)
+                elif findtype(commandlist[2]) == "sector":
+                    if findtype(commandlist[3]) == "sector":
+                        numbrero = float(getline(int(commandlist[3].replace("x", ""))))
+                        fixed = float(getline(int(commandlist[2].replace("x",""))))
+                        numbrero = round(numbrero * float(fixed), 10)
+                        mov(str(numbrero)+"\n", int(commandlist[3].replace("x", ""))-1)
+                else:
+                    if line == 0:
+                        print("Please enter a number!")
+                    else:
+                        print(f"Please enter a number on line {line}")
+            elif findtype(commandlist[1]) == "number":
+                if findtype(commandlist[2]) == "sector":
+                    numbrero = float(getline(int(commandlist[2].replace("x", ""))))
+                    fixed = commandlist[1].replace("(", "")
+                    numbrero = round(numbrero + float(fixed.replace(")", "")), 10)
+                    mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
+            elif findtype(commandlist[1]) == "sector":
+                if findtype(commandlist[2]) == "sector":
+                    numbrero = float(getline(int(commandlist[2].replace("x", ""))))
+                    fixed = float(getline(int(commandlist[1].replace("x",""))))
+                    numbrero = round(numbrero + float(fixed), 10)
+                    mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
+            else:
+                if line == 0:
+                    print("Please enter a number!")
+                else:
+                    print(f"Please enter a number on line {line}")
+        except:
             if line == 0:
                 print("Please enter a number!")
             else:
                 print(f"Please enter a number on line {line}")
     elif parsecommand == "s":
-        if findtype(commandlist[1]) == "number":
-            if findtype(commandlist[2]) == "sector":
-                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
-                fixed = commandlist[1].replace("(", "")
-                numbrero = round(numbrero - float(fixed.replace(")", "")), 10)
-                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
-        elif findtype(commandlist[1]) == "sector":
-            if findtype(commandlist[2]) == "sector":
-                numbrero = float(getline(int(commandlist[2].replace("x", ""))))
-                fixed = float(getline(int(commandlist[1].replace("x",""))))
-                numbrero = round(numbrero - float(fixed), 10)
-                mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
-        else:
+        try:
+            if commandlist[1] == "d":
+                if findtype(commandlist[2]) == "number":
+                    if findtype(commandlist[3]) == "sector":
+                        numbrero = float(getline(int(commandlist[3].replace("x", ""))))
+                        fixed = commandlist[2].replace("(", "")
+                        numbrero = round(numbrero / float(fixed.replace(")", "")), 10)
+                        mov(str(numbrero)+"\n", int(commandlist[3].replace("x", ""))-1)
+                elif findtype(commandlist[2]) == "sector":
+                    if findtype(commandlist[3]) == "sector":
+                        numbrero = float(getline(int(commandlist[3].replace("x", ""))))
+                        fixed = float(getline(int(commandlist[2].replace("x",""))))
+                        numbrero = round(numbrero / float(fixed), 10)
+                        mov(str(numbrero)+"\n", int(commandlist[3].replace("x", ""))-1)
+                else:
+                    if line == 0:
+                        print("Please enter a number!")
+                    else:
+                        print(f"Please enter a number on line {line}")
+            elif findtype(commandlist[1]) == "number":
+                if findtype(commandlist[2]) == "sector":
+                    numbrero = float(getline(int(commandlist[2].replace("x", ""))))
+                    fixed = commandlist[1].replace("(", "")
+                    numbrero = round(numbrero - float(fixed.replace(")", "")), 10)
+                    mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
+            elif findtype(commandlist[1]) == "sector":
+                if findtype(commandlist[2]) == "sector":
+                    numbrero = float(getline(int(commandlist[2].replace("x", ""))))
+                    fixed = float(getline(int(commandlist[1].replace("x",""))))
+                    numbrero = round(numbrero - float(fixed), 10)
+                    mov(str(numbrero)+"\n", int(commandlist[2].replace("x", ""))-1)
+            else:
+                if line == 0:
+                    print("Please enter a number!")
+                else:
+                    print(f"Please enter a number on line {line}")
+        except:
             if line == 0:
                 print("Please enter a number!")
             else:
@@ -144,6 +193,8 @@ def parse(command, line, verbose):
             first = first.replace(")", "")
         elif findtype(commandlist[1]) == "string":
             first = commandlist[1].replace('"', "")
+        else:
+            first = commandlist[1]
 
         if findtype(commandlist[3]) == "sector":
             second = getsector(commandlist[3])
@@ -152,6 +203,8 @@ def parse(command, line, verbose):
             second = second.replace(")", "")
         elif findtype(commandlist[3]) == "string":
             second = commandlist[3].replace('"', "")
+        else:
+            second = commandlist[3]
         first = first.split()
         second = second.split()
 
@@ -225,7 +278,7 @@ def parse(command, line, verbose):
                 string1 = string1+string2
                 mov(string1+"\n", int(sector)-1)
             else:
-                if findtype(commandlist[1]) == "text":
+                if findtype(commandlist[1]) == "string":
                     text = commandlist[1]
                     text = text.replace('"', "")
                     letter = commandlist[2].replace("(", "")
@@ -267,11 +320,11 @@ def parse(command, line, verbose):
                 print('Please format "t" like "t w (1) :function:"')
             else:
                 print(f'Please format "t" like "t w (1) :function:" on line {line}')
+    elif parsecommand == "d":
+        pass
     elif parsecommand == "#":
         pass
     elif parsecommand == "e":
-        pass
-    elif parsecommand == "d":
         pass
     else:
         if not line == 0:

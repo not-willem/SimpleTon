@@ -173,7 +173,7 @@ def runterminalinbackground():
                             tricommands = None
                             displaycommands = ["","","","","",""]
                 except Exception as e:
-                    print(f"Error: {e}")
+                    pass
 
             if cmp.skip:
                 try:
