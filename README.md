@@ -27,4 +27,4 @@ also keep the ttf file with the exe file! for some reason, it doesnt want to pac
 
 Basically i have just a big google doc of the commands that made sense to me at the time but i dont know if they still do. anyway look for things like "l docs" or "m docs" etc
 
-alright [here it is]()
+alright [here it is](https://github.com/not-willem/SimpleTon/blob/main/ST.pdf)
