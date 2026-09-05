@@ -3,7 +3,7 @@ a universal coding language
 
 i've began working on writing a coding language and it's going great so far!!
 
-# Installation:
+# Installation
 
 1. Download the source code by going to "Code" then "Download as zip"
 
