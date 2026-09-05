@@ -6,6 +6,7 @@ from pynput import keyboard
 import ast
 from screeninfo import get_monitors
 import linecache
+import time
 
 global mtsx
 global mtsy
@@ -20,6 +21,7 @@ cache = 0
 current_key = "none"
 displaycommands = []
 screen = None
+tricommands = None
 
 def setupdisplay():
     global screen
@@ -36,9 +38,12 @@ def setupdisplay():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
         mousex, mousey = pygame.mouse.get_pos()
         pygame.display.flip()
-        clock.tick(10000)
+        clock.tick(60)
     pygame.quit()
     sys.exit()
 
@@ -85,6 +90,7 @@ def sendmouse():
         if mousex is not None:
             cmp.mov(str(mousex) + "\n", 7)
             cmp.mov(str(mousey) + "\n", 8)
+        time.sleep(0.01)
 
 def on_release(key):
     global current_key
@@ -98,8 +104,9 @@ def startlistener():
 def runterminalinbackground():
     global displaycommands
     global screen
+    global tricommands
     displaycommands = ["","","","","",""]
-    tricommands = ["","","","","","","","","","","",""]
+    tricommands = None
     if len(sys.argv) < 2:
         while True:
             userinput = input("> ")
@@ -111,48 +118,67 @@ def runterminalinbackground():
         fileindex = 0
         while fileindex < len(lines):
             cmp.parse(lines[fileindex], fileindex + 1, verbose)
-            if screen is not None:
-                if "" not in displaycommands:
-                    try:
-                        if displaycommands[5] == "circle":
-                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
-                            displaycommands = ["","","","","",""]
-                        if displaycommands[5] == "square":
-                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
-                            displaycommands = ["","","","","",""]
-                        if displaycommands[5] == "filledcircle":
-                            pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
-                            displaycommands = ["","","","","",""]
-                        if displaycommands[5] == "filledsquare":
-                            pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
-                            displaycommands = ["","","","","",""]                            
-                        if displaycommands[5] == "text":
-                            fonter = pygame.font.Font("Ac437_IBM_VGA_8x16.ttf", int(displaycommands[2]))
-                            textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
-                            screen.blit(textperson, (int(displaycommands[0]), int(displaycommands[1])))
-                            displaycommands = ["","","","","",""] 
-                        if displaycommands[5] == "triangle":
-                            if not displaycommands[4] == "none":
-                                # param 2
-                                tricommands = tricommands + displaycommands
-                                print(tricommands)
-                            else:
-                                # param 1
-                                tricommands = displaycommands
-                    except:
-                        pass
-
+            
             for i in range(6):
-                if not cmp.getline(int(i)+1) == "\n":
-                    displaycommands[int(i)] = cmp.getline(int(i)+1).replace("\n", "")
+                line_data = cmp.getline(int(i)+1)
+                if line_data and line_data != "\n" and line_data != "":
+                    displaycommands[int(i)] = line_data.replace("\n", "")
                 cmp.mov(""+"\n",int(i))
-                        
-                
+            
+            if screen is not None and all(x != "" for x in displaycommands):
+                try:
+                    if displaycommands[5] == "circle":
+                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
+                        displaycommands = ["","","","","",""]
+                    elif displaycommands[5] == "square":
+                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])], 1)
+                        displaycommands = ["","","","","",""]
+                    elif displaycommands[5] == "filledcircle":
+                        pygame.draw.ellipse(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                        displaycommands = ["","","","","",""]
+                    elif displaycommands[5] == "filledsquare":
+                        pygame.draw.rect(screen, ast.literal_eval(displaycommands[4]), [int(displaycommands[0]), int(displaycommands[1]), int(displaycommands[2]), int(displaycommands[3])])
+                        displaycommands = ["","","","","",""]                            
+                    elif displaycommands[5] == "text":
+                        fonter = pygame.font.Font(None, int(displaycommands[2]))
+                        textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
+                        screen.blit(textperson, (int(displaycommands[0]), int(displaycommands[1])))
+                        displaycommands = ["","","","","",""] 
+                    elif displaycommands[5] in ["triangle", "filledtriangle"]:
+                        if displaycommands[3] != "none" and tricommands is None:
+                            tricommands = displaycommands.copy()
+                            displaycommands = ["","","","","",""]
+                        elif displaycommands[3] == "none" and tricommands is not None:
+                            x1 = int(tricommands[0])
+                            y1 = int(tricommands[1])
+                            x2 = int(tricommands[2])
+                            y2 = int(tricommands[3])
+                            color = ast.literal_eval(tricommands[4])
+                            
+                            x3 = int(displaycommands[0])
+                            y3 = int(displaycommands[1])
+                            outline_width = int(displaycommands[2])
+                            
+                            if tricommands[5] == "filledtriangle":
+                                if outline_width == 0:
+                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)])
+                                else:
+                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], outline_width)
+                            else:
+                                if outline_width == 0:
+                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], 1)
+                                else:
+                                    pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x3, y3)], outline_width)
+                            
+                            tricommands = None
+                            displaycommands = ["","","","","",""]
+                except Exception as e:
+                    print(f"Error: {e}")
+
             if cmp.skip:
                 try:
                     while not lines[fileindex] == "e":
                         fileindex = fileindex + 1
-                        
                         if fileindex > len(lines) - 1:
                             print('Please add a "e" command to your code to end the function!')
                 except:
@@ -172,7 +198,6 @@ def runterminalinbackground():
 threadman = threading.Thread(target=startlistener, daemon=True)
 threadman.start()
 
-
 if len(sys.argv) > 1:
     with open(sys.argv[1], "r") as file:
         if linecache.getline(sys.argv[1], 1).strip() == "d":
@@ -183,7 +208,6 @@ if len(sys.argv) > 1:
             setupdisplay()
             mouseman = threading.Thread(target=sendmouse, daemon=True)
             mouseman.start()
-            
         else:
             if verbose:
                 print("Display not found..")

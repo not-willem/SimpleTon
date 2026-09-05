@@ -28,67 +28,50 @@ def functionfind(filename):
                 functions.append([comlist[1].replace('"', ""), index])
         except:
             pass
-        
 
-
-#command parser
 def parse(command, line, verbose):
-    
-    #split
     commandlist = re.findall(r'"[^"]*"|\S+', command)
     try:
         parsecommand = commandlist[0]
     except:
         parsecommand = "#"
     if parsecommand == "m":
-            try:
-                if findtype(commandlist[1]) == "sector":
-                    # checks if the param is a sector, gets rid of the x and 1-indexes it
-                    number = commandlist[1].replace("x", "")
+        try:
+            if findtype(commandlist[1]) == "sector":
+                number = commandlist[1].replace("x", "")
+                number = int(number)
+                storagesector = STORAGE[number-1]
+                if verbose:
+                    print(storagesector)
+                if findtype(commandlist[2]) == "sector":
+                    number = commandlist[2].replace("x", "")
                     number = int(number)
-                    #gets it from the storage list
-                    storagesector = STORAGE[number-1]
+                    storagesector2 = STORAGE[number-1]
                     if verbose:
-                        print(storagesector)
-                    if findtype(commandlist[2]) == "sector":
-                        #moving time
-                        number = commandlist[2].replace("x", "")
-                        number = int(number)
-                        #gets it from the storage list
-                        storagesector2 = STORAGE[number-1]
-                        if verbose:
-                            print(storagesector2)
-                        #moves the things around
-                        mov(storagesector, number-1)
-                elif findtype(commandlist[1]) == "string":
-                    #if type 1 is string
-                    string = commandlist[1].replace('"', "")
-                    if findtype(commandlist[2]) == "sector":
-                        #if type 2 is sector
-                        number = commandlist[2].replace("x", "")
-                        if verbose:
-                            print(string)
-                        number = int(number)
-                        #put the string in the sector
-                        mov(string + "\n", number-1)
-                elif findtype(commandlist[1]) == "number":
-                    #if type 1 is a numbrero
-                    numbrero = commandlist[1].replace("(", "")
-                    numbrero = numbrero.replace(")", "")
-                    if findtype(commandlist[2]) == "sector":
-                        # oh no he's onto me i think he knows im a sector oh no
-                        number = commandlist[2].replace("x", "")
-                        if verbose:
-                            print(numbrero)
-                        number = int(number)
-                        # put
-                        mov(str(numbrero) + "\n", number-1)
-            except:
-                if line == 0:
-                    print("Please check your spelling!")
-                else:
-                    print(f"Please check your spelling on line {line}")
-
+                        print(storagesector2)
+                    mov(storagesector, number-1)
+            elif findtype(commandlist[1]) == "string":
+                string = commandlist[1].replace('"', "")
+                if findtype(commandlist[2]) == "sector":
+                    number = commandlist[2].replace("x", "")
+                    if verbose:
+                        print(string)
+                    number = int(number)
+                    mov(string + "\n", number-1)
+            elif findtype(commandlist[1]) == "number":
+                numbrero = commandlist[1].replace("(", "")
+                numbrero = numbrero.replace(")", "")
+                if findtype(commandlist[2]) == "sector":
+                    number = commandlist[2].replace("x", "")
+                    if verbose:
+                        print(numbrero)
+                    number = int(number)
+                    mov(numbrero + "\n", number-1)
+        except:
+            if line == 0:
+                print("Please check your spelling!")
+            else:
+                print(f"Please check your spelling on line {line}")
     elif parsecommand == "p":
         if findtype(commandlist[1]) == "string":
             print(commandlist[1].replace('"',""))
@@ -180,7 +163,6 @@ def parse(command, line, verbose):
             else:
                 print("no")
         
-        
         try:
             if not findtype(commandlist[4]) == "iffunc":
                 if commandlist[2] == "=":
@@ -209,9 +191,6 @@ def parse(command, line, verbose):
                     else:
                         mov("0", int(commandlist[4].replace("x", "")))
             else:
-
-                # faaahh
-
                 if commandlist[2] == "=":
                     if str(first) == str(second):
                         runfunc(commandlist[4].replace(":",""), True)
@@ -227,14 +206,11 @@ def parse(command, line, verbose):
                 if commandlist[2] == "=!":
                     if not str(first) == str(second):
                         runfunc(commandlist[4].replace(":",""), True)
-
         except:
             if line == 0:
                 print("Please enter the i command like: i x12 = x12 x13")
             else:
                 print(f"Please enter the i command on line {line} like: i x12 = x12 x13")
-
-
     elif parsecommand == "l":
         try:
             if commandlist[1] == "j":
@@ -248,8 +224,6 @@ def parse(command, line, verbose):
                 sector = sector.replace("x", "")
                 string1 = string1+string2
                 mov(string1+"\n", int(sector)-1)
-
-
             else:
                 if findtype(commandlist[1]) == "text":
                     text = commandlist[1]
@@ -258,7 +232,6 @@ def parse(command, line, verbose):
                     letter = letter.replace(")","")
                     letter = int(letter)
                     sector = commandlist[3].replace("x", "")
-                    
                     mov(text[letter-1], int(sector))
                 elif findtype(commandlist[1]) == "sector":
                     text = commandlist[1]
@@ -274,7 +247,6 @@ def parse(command, line, verbose):
                 print('Please format "l" like "l "sausage" (4) x9"')
             else:
                 print(f'Please format "l" on line {line} like "l "sausage" (4) x9"')
-
     elif parsecommand == "f":
         global skip
         if line == 0:
@@ -288,7 +260,6 @@ def parse(command, line, verbose):
                 timeman = timeman.replace(")","")
                 timeman = float(timeman)
                 functionman = commandlist[3].replace(":","")
-                
                 time.sleep(timeman)
                 runfunc(functionman, True)
         except:
@@ -296,7 +267,6 @@ def parse(command, line, verbose):
                 print('Please format "t" like "t w (1) :function:"')
             else:
                 print(f'Please format "t" like "t w (1) :function:" on line {line}')
-            
     elif parsecommand == "#":
         pass
     elif parsecommand == "e":
