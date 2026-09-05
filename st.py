@@ -99,7 +99,7 @@ def runterminalinbackground():
     global displaycommands
     global screen
     displaycommands = ["","","","","",""]
-
+    tricommands = ["","","","","","","","","","","",""]
     if len(sys.argv) < 2:
         while True:
             userinput = input("> ")
@@ -131,6 +131,14 @@ def runterminalinbackground():
                             textperson = fonter.render(str(displaycommands[3]), True, ast.literal_eval(displaycommands[4]))
                             screen.blit(textperson, (int(displaycommands[0]), int(displaycommands[1])))
                             displaycommands = ["","","","","",""] 
+                        if displaycommands[5] == "triangle":
+                            if not displaycommands[4] == "none":
+                                # param 2
+                                tricommands = tricommands + displaycommands
+                                print(tricommands)
+                            else:
+                                # param 1
+                                tricommands = displaycommands
                     except:
                         pass
 
@@ -138,6 +146,7 @@ def runterminalinbackground():
                 if not cmp.getline(int(i)+1) == "\n":
                     displaycommands[int(i)] = cmp.getline(int(i)+1).replace("\n", "")
                 cmp.mov(""+"\n",int(i))
+                        
                 
             if cmp.skip:
                 try:
