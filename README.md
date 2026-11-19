@@ -74,7 +74,8 @@ e
 ```
 
 4. Open up a terminal and cd into the folder "st" is in
-5. Run the command `./st test.st` and press "shift" to make your screen red
+5. Run the command `chmod +x st` to allow running it
+6. Run the command `./st test.st` and press "shift" to make your screen red
 
 ## Linux (build from C)
 
